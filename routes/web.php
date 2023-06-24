@@ -36,6 +36,8 @@ Route::prefix('mobile')->group(function () {
     Route::get('/favourite', [MobileController::class, 'fav'])->middleware('auth')->name('caffee.fav');
     Route::get('/profile', [MobileController::class, 'profile'])->middleware('auth')->name('profile');
     Route::get('/caffe/menu/{name?}', [MobileController::class, 'menu'])->name('caffee.menu');
+
+    Route::post('/caffe/fav', [MobileController::class, 'makeFav']);
 });
 
 Route::prefix('admin')->as('admin.')->middleware(['auth', 'auth.admin'])->group(function () {
@@ -44,6 +46,12 @@ Route::prefix('admin')->as('admin.')->middleware(['auth', 'auth.admin'])->group(
     Route::resource('user', UserController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('cafe', CafeController::class);
+
+    Route::get('/cafe/{cafe}/suspend', [CafeController::class, 'suspend'])->name('cafe.suspend');
+    Route::get('/cafe/{cafe}/verify', [CafeController::class, 'verify'])->name('cafe.verify');
+
+    Route::get('/user/{user}/suspend', [UserController::class, 'suspemd'])->name('user.suspend');
+    Route::get('/user/{user}/verify', [UserController::class, 'verify'])->name('user.verify');
 
     Route::get('/', [HomeController::class, 'admin']);
 });
@@ -56,7 +64,11 @@ Route::prefix('owner')->as('owner.')->middleware(['auth', 'auth.owner'])->group(
     Route::resource('cafe/{cafe}/menu', MenuController::class);
     Route::resource('cafe/{cafe}/image', CafeImageController::class);
 
+    //reply review
+    Route::post('cafe/{cafe}/review/reply', [ReviewController::class, 'reply'])->name('review.reply');
+
     Route::get('/', [HomeController::class, 'owner']);
+    Route::get('/home', [HomeController::class, 'owner']);
 });
 Route::middleware(['auth'])->group(function () {
     Route::resource('cafe', CafeController::class);
@@ -64,6 +76,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('review', ReviewController::class);
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

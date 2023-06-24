@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cafe;
+use App\Models\CafeUrl;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UrlController extends Controller
 {
@@ -35,9 +39,29 @@ class UrlController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Cafe $cafe, Request $request)
     {
-        //
+        $client = new Client();
+        $psReq = new Psr7Request('GET', 'https://www.tiktok.com/oembed?url=' . $request->url);
+        $res = $client->sendAsync($psReq)->wait();
+        $result = json_decode($res->getBody());
+
+        $contents = $this->getFileFromUrl($result->thumbnail_url);
+        $uid = uniqid();
+        Storage::put("public/tiktok/" . $uid . ".jpg", $contents);
+        if ($result->type == 'video') {
+            $url = new CafeUrl();
+            $url->cafe_id = $cafe->id;
+            $url->type = $result->type;
+            $url->url = $request->url;
+            $url->html = $result->html;
+            $url->thumbnail = "storage/tiktok/" . $uid . ".jpg";
+            $url->save();
+
+            return redirect()->back()->with('success', 'Video berhasil ditambahkan');
+        } else {
+            return redirect()->back()->with('error', 'Tautan tidak valid');
+        }
     }
 
     /**
@@ -80,8 +104,9 @@ class UrlController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cafe $cafe, $id)
     {
-        //
+        CafeUrl::query()->find($id)->delete();
+        return redirect()->back()->with('success', 'Berhasil menghapus data');
     }
 }

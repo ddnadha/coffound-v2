@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cafe;
 use App\Models\Favourite;
+use App\Models\Province;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -50,8 +51,9 @@ class MobileController extends Controller
             sin( radians( lat ) ) ) ) AS distance"
         )
             ->orderByRaw('distance')
-            ->take(3)
+            ->take(4)
             ->where('id', '!=', $cafe->id)
+            ->where('status', 'active')
             ->get();
 
         $cafe->{'is_fav'} = Favourite::where('cafe_id', $cafe->id)->where('user_id', auth()->id())->exists();
@@ -70,6 +72,8 @@ class MobileController extends Controller
 
     public function openForm(Request $request)
     {
+        $province = Province::all();
+        return view('pages.mobile.form', compact('province'));
     }
 
     public function fav(Request $request)
@@ -82,9 +86,33 @@ class MobileController extends Controller
 
     public function profile(Request $request)
     {
+        return view('pages.mobile.profile');
     }
 
     public function menu(Request $request)
     {
+    }
+
+    public function makeFav(Request $request)
+    {
+        $q = Favourite::query()
+            ->where('user_id', auth()->id())
+            ->where('cafe_id', $request->cafe);
+        if (!$q->exists()) {
+            $fav = new Favourite;
+            $fav->user_id = auth()->id();
+            $fav->cafe_id = $request->cafe;
+            $fav->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil menambahkan cafe ke daftar favorit'
+            ]);
+        } else {
+            $q->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil menghapus cafe dari daftar favorit'
+            ]);
+        }
     }
 }

@@ -51,12 +51,12 @@
                                         <form action="{{ route('admin.cafe.destroy', $c) }}" method="POST">
                                             @csrf
                                             @if ($c->status != 'active')
-                                                <a href="{{ route('admin.cafe.show', $c) }}"
+                                                <a href="{{ route('admin.cafe.verify', $c) }}"
                                                     class="btn btn-icon btn-primary btn-sm">
                                                     <i class="fas fa-check"></i>
                                                 </a>
                                             @else
-                                                <a href="{{ route('admin.cafe.show', $c) }}"
+                                                <a href="{{ route('admin.cafe.suspend', $c) }}"
                                                     class="btn btn-icon btn-warning btn-sm">
                                                     <i class="fas fa-ban"></i>
                                                 </a>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>@yield('title') &mdash; Coffound</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- General CSS Files -->
     {{-- <link rel="stylesheet" href="{{ asset('library/bootstrap/dist/css/bootstrap.min.css') }}"> --}}
@@ -24,19 +25,6 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
 
-    <!-- Start GA -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-94034622-3');
-    </script>
-    <!-- END GA -->
 </head>
 </head>
 
@@ -95,9 +83,9 @@
     @endif
     @if (session()->has('error'))
         <script>
-            iziToast.success({
+            iziToast.error({
                 title: "Terjadi Kesalahan",
-                message: "{{ session('success') }}",
+                message: "{{ session('error') }}",
                 position: 'topRight'
             });
         </script>

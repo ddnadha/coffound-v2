@@ -36,7 +36,7 @@
                                         </div>
                                     </div>
                                     <div class="w-100 container-button-cafe">
-                                        <a href="{{ route('caffee.show', $cafe) }}"
+                                        <a href="{{ route('caffee.show') }}/{{ str_replace(' ', '_', $cafe->name) }}"
                                             class="btn btn-primary btn-icon float-right mr-1 force-round-20">
                                             <i class="fas fa-angle-right"></i>
                                         </a>

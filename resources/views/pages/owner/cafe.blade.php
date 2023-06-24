@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Dashboard</h1>
+            <h1>{{ $cafe->name }}</h1>
         </div>
         <div class="col-md-12">
             <div class="row mt-sm-4">
@@ -36,180 +36,61 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-12 col-lg-7">
-                    <div class="mt-4 mb-3">
-                        <a href="{{ url('/owner/cafe/' . $cafe->id . '/category') }}"
-                            class=" btn btn-primary btn-icon mr-1">
-                            <i class="fas fa-boxes mr-1"></i> Kategori
-                        </a>
-                        <a href="{{ url('/owner/cafe/' . $cafe->id . '/image') }}" class=" btn btn-primary btn-icon mr-1">
-                            <i class="fas fa-image mr-1"></i> Foto
-                        </a>
-                        <a href="{{ url('/owner/cafe/' . $cafe->id . '/menu') }}" class=" btn btn-primary btn-icon mr-1">
-                            <i class="fas fa-hamburger mr-1"></i> Menu
-                        </a>
-                        <a href="{{ url('/owner/cafe/' . $cafe->id . '/url') }}" class=" btn btn-primary btn-icon mr-1">
-                            <i class="fab fa-tiktok mr-1"></i> Video Tiktok
-                        </a>
-                        <a href="{{ url('/owner/cafe/' . $cafe->id . '/review') }}" class=" btn btn-primary btn-icon mr-1">
-                            <i class="fas fa-message mr-1"></i> Review
-                        </a>
-                    </div>
+                    @include('components.owner-nav')
                     <div class="card">
-                        <form method="post" class="needs-validation" novalidate="">
+                        <form method="post" action="{{ route('owner.cafe.update', $cafe) }}" class="needs-validation"
+                            novalidate="">
                             <div class="card-header">
                                 <h4>Edit Data Caffee</h4>
                             </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-12">
-                                        <label>First Name</label>
-                                        <input type="text" class="form-control" value="Ujang" required="">
-                                        <div class="invalid-feedback">
-                                            Please fill in the first name
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6 col-12">
-                                        <label>Last Name</label>
-                                        <input type="text" class="form-control" value="Maman" required="">
-                                        <div class="invalid-feedback">
-                                            Please fill in the last name
-                                        </div>
-                                    </div>
+                                @csrf
+                                {{ method_field('PUT') }}
+                                <div class="form-group">
+                                    <label for="name">Nama Cafe</label>
+                                    <input type="text" class="form-control" name="name" id="name"
+                                        value="{{ $cafe->name }}">
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-md-7 col-12">
-                                        <label>Email</label>
-                                        <input type="email" class="form-control" value="ujang@maman.com" required="">
-                                        <div class="invalid-feedback">
-                                            Please fill in the email
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-5 col-12">
-                                        <label>Phone</label>
-                                        <input type="tel" class="form-control" value="">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="address">Alamat Cafe</label>
+                                    <input type="text" class="form-control" name="address" id="adress"
+                                        value="{{ $cafe->address }}">
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-12">
-                                        <label>Bio</label>
-                                        <textarea class="form-control summernote-simple" style="display: none;">Ujang maman is a superhero name in &lt;b&gt;Indonesia&lt;/b&gt;, especially in my family. He is not a fictional character but an original hero in my family, a hero for his children and for his wife. So, I use the name as a user in this template. Not a tribute, I'm just bored with &lt;b&gt;'John Doe'&lt;/b&gt;.</textarea>
-                                        <div class="note-editor note-frame card">
-                                            <div class="note-dropzone">
-                                                <div class="note-dropzone-message"></div>
-                                            </div>
-                                            <div class="note-toolbar-wrapper" style="height: 72px;">
-                                                <div class="note-toolbar card-header"
-                                                    style="position: relative; top: 0px; width: 100%;">
-                                                    <div class="note-btn-group btn-group note-style"><button type="button"
-                                                            class="note-btn btn btn-light btn-sm note-btn-bold"
-                                                            tabindex="-1" title=""
-                                                            data-original-title="Bold (CTRL+B)"><i
-                                                                class="note-icon-bold"></i></button><button type="button"
-                                                            class="note-btn btn btn-light btn-sm note-btn-italic"
-                                                            tabindex="-1" title=""
-                                                            data-original-title="Italic (CTRL+I)"><i
-                                                                class="note-icon-italic"></i></button><button type="button"
-                                                            class="note-btn btn btn-light btn-sm note-btn-underline"
-                                                            tabindex="-1" title=""
-                                                            data-original-title="Underline (CTRL+U)"><i
-                                                                class="note-icon-underline"></i></button><button
-                                                            type="button" class="note-btn btn btn-light btn-sm"
-                                                            tabindex="-1" title=""
-                                                            data-original-title="Remove Font Style (CTRL+\)"><i
-                                                                class="note-icon-eraser"></i></button></div>
-                                                    <div class="note-btn-group btn-group note-font"><button type="button"
-                                                            class="note-btn btn btn-light btn-sm note-btn-strikethrough"
-                                                            tabindex="-1" title=""
-                                                            data-original-title="Strikethrough (CTRL+SHIFT+S)"><i
-                                                                class="note-icon-strikethrough"></i></button></div>
-                                                    <div class="note-btn-group btn-group note-para">
-                                                        <div class="note-btn-group btn-group"><button type="button"
-                                                                class="note-btn btn btn-light btn-sm dropdown-toggle"
-                                                                tabindex="-1" data-toggle="dropdown" title=""
-                                                                data-original-title="Paragraph"><i
-                                                                    class="note-icon-align-left"></i></button>
-                                                            <div class="dropdown-menu">
-                                                                <div class="note-btn-group btn-group note-align"><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Align left (CTRL+SHIFT+L)"><i
-                                                                            class="note-icon-align-left"></i></button><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Align center (CTRL+SHIFT+E)"><i
-                                                                            class="note-icon-align-center"></i></button><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Align right (CTRL+SHIFT+R)"><i
-                                                                            class="note-icon-align-right"></i></button><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Justify full (CTRL+SHIFT+J)"><i
-                                                                            class="note-icon-align-justify"></i></button>
-                                                                </div>
-                                                                <div class="note-btn-group btn-group note-list"><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Outdent (CTRL+[)"><i
-                                                                            class="note-icon-align-outdent"></i></button><button
-                                                                        type="button"
-                                                                        class="note-btn btn btn-light btn-sm"
-                                                                        tabindex="-1" title=""
-                                                                        data-original-title="Indent (CTRL+])"><i
-                                                                            class="note-icon-align-indent"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="note-editing-area">
-                                                <div class="note-handle">
-                                                    <div class="note-control-selection">
-                                                        <div class="note-control-selection-bg"></div>
-                                                        <div class="note-control-holder note-control-nw"></div>
-                                                        <div class="note-control-holder note-control-ne"></div>
-                                                        <div class="note-control-holder note-control-sw"></div>
-                                                        <div class="note-control-sizing note-control-se"></div>
-                                                        <div class="note-control-selection-info"></div>
-                                                    </div>
-                                                </div>
-                                                <textarea class="note-codable"></textarea>
-                                                <div class="note-editable card-block" contenteditable="true"
-                                                    style="min-height: 150px;">Ujang maman is a superhero name in
-                                                    <b>Indonesia</b>, especially in my family. He is not a fictional
-                                                    character but an original hero in my family, a hero for his children and
-                                                    for his wife. So, I use the name as a user in this template. Not a
-                                                    tribute, I'm just bored with <b>'John Doe'</b>.
-                                                </div>
-                                            </div>
-                                            <div class="note-statusbar">
-                                                <div class="note-resizebar">
-                                                    <div class="note-icon-bar"></div>
-                                                    <div class="note-icon-bar"></div>
-                                                    <div class="note-icon-bar"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="province" class="mb-1">Provinsi</label>
+                                    <select name="province" id="select_province" class="form-control select2">
+                                        @foreach ($province as $p)
+                                            <option value="{{ $p->id }}"
+                                                @if ($p->id == $cafe->district->regency->province_id) selected @endif>
+                                                {{ ucfirst(strtolower($p->name)) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group mb-0 col-12">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="remember" class="custom-control-input"
-                                                id="newsletter">
-                                            <label class="custom-control-label" for="newsletter">Subscribe to
-                                                newsletter</label>
-                                            <div class="text-muted form-text">
-                                                You will get new information about products, offers and promotions
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="">Titik Lokasi</label>
+                                    <input type="hidden" name="latlng" id="inputLatLong"
+                                        value="{{ json_encode([$cafe->lat, $cafe->lng]) }}">
+                                    <div class="leaflet-map mt-2" id="map" style="height: 40vh;"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Kota / Kabupaten</label>
+                                    <select name="city" id="select_city" class="form-control select2">
+                                        <option value="{{ $cafe->district->regency_id }}">
+                                            {{ ucfirst(strtolower($cafe->district->regency->name)) }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAddress">Kecamatan</label>
+                                    <select name="district" id="select_district" class="form-control select2">
+                                        <option value="{{ $cafe->district_id }}">
+                                            {{ ucfirst(strtolower($cafe->district->name)) }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address" class="mb-1">Deskripsi Caffee</label>
+                                    <textarea name="desc" id="autosize-demo" rows="3" class="form-control"
+                                        style="overflow: hidden; overflow-wrap: break-word; resize: none; height: 83px;">{{ $cafe->desc }}</textarea>
                                 </div>
                             </div>
                             <div class="card-footer text-right">
@@ -222,3 +103,79 @@
         </div>
     </section>
 @endsection
+
+@push('style')
+    <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/leaflet/leaflet.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
+@endpush
+@push('scripts')
+    <script src="{{ asset('library/select2/dist/js/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/autosize/autosize.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/leaflet/leaflet.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#select_province').select2()
+            $('#select_city').select2()
+            $('#select_district').select2()
+            autosize($('#autosize-demo'));
+            let latLong = undefined
+            let marker = undefined
+            latLong = [{{ $cafe->lat }}, {{ $cafe->lng }}]
+            var map = L.map('map').setView(latLong, 15);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            marker = L.marker(latLong, {
+                draggable: 'true'
+            }).addTo(map);
+            marker.on('move', function(param) {
+                latLong = [param.latlng.lat, param.latlng.lng]
+                $('#inputLatLong').val(JSON.stringify(latLong))
+            })
+
+            $('#select_province').on('change', function() {
+                getCity($(this).val())
+            })
+            $('#select_city').on('change', function() {
+                getDistrict($(this).val())
+            })
+            $('#select_district').on('change', function() {
+                console.log($(this).val())
+            })
+        })
+
+        function getCity(province) {
+            $('#select_city').html('');
+            $.ajax({
+                type: 'GET',
+                url: `{{ url('/api/geo/city') }}?province=${province}`,
+                async: false,
+                dataType: 'json',
+                success: function(result) {
+                    result.forEach(function(data) {
+                        $('#select_city').append(new Option(data.name, data.id, false,
+                            false)).trigger('change');
+                    })
+                }
+            })
+        }
+
+        function getDistrict(city) {
+            $('#select_district').html('');
+            $.ajax({
+                type: 'GET',
+                url: `{{ url('/api/geo/district') }}?city=${city}`,
+                async: false,
+                dataType: 'json',
+                success: function(result) {
+                    result.forEach(function(data) {
+                        $('#select_district').append(new Option(data.name, data.id, false,
+                            false)).trigger('change');
+                    })
+                }
+            })
+        }
+    </script>
+@endpush

@@ -50,14 +50,14 @@
                                         <form action="{{ route('admin.review.destroy', $r) }}" method="POST">
                                             @csrf
                                             <a href="{{ route('admin.review.show', $r) }}"
-                                                class="btn btn-icon btn-warning btn-sm">
-                                                <i class="fas fa-exclamation-circle"></i>
+                                                class="btn btn-icon btn-warning ">
+                                                <i class="fas fa-exclamation-circle mr-1"></i> Suspend
                                             </a>
                                             {{ method_field('DELETE') }}
-                                            <button class="btn btn-sm btn-danger"
+                                            <button class="btn btn-icon btn-danger"
                                                 onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')"
                                                 type="submit">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash mr-1"></i> Hapus
                                             </button>
                                         </form>
                                     </td>

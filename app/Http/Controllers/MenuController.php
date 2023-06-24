@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cafe;
+use App\Models\CafeImage;
+use App\Models\Menu;
+use App\Models\MenuImage;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
 {
@@ -24,9 +29,9 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Cafe $cafe)
     {
-        //
+        return view('pages.owner.form-menu', compact('cafe'));
     }
 
     /**
@@ -35,9 +40,34 @@ class MenuController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Cafe $cafe, Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $menu = new Menu();
+            $menu->cafe_id = $cafe->id;
+            $menu->name = $request->name;
+            $menu->desc = $request->desc;
+            $menu->price = $request->price;
+            $menu->save();
+
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('storage/menu'), $imageName);
+
+            $imageUpload = new MenuImage();
+            $imageUpload->is_priority = !MenuImage::where('menu_id', $menu->id)->exists();
+            $imageUpload->menu_id = $menu->id;
+            $imageUpload->img = 'storage/menu/' . $imageName;
+            $imageUpload->save();
+
+            DB::commit();
+
+            return redirect()->route('owner.menu.index', $cafe)->with('success', 'Berhasil menambahkan menu');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal menambahkan data - ' . $e->getMessage());
+        }
     }
 
     /**
@@ -57,9 +87,10 @@ class MenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Cafe $cafe, $id)
     {
-        //
+        $menu = Menu::query()->find($id);
+        return view('pages.owner.form-menu', compact('cafe', 'menu'));
     }
 
     /**
@@ -69,9 +100,32 @@ class MenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Cafe $cafe, $id, Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $menu = Menu::query()->find($id);
+            $menu->name = $request->name;
+            $menu->desc = $request->desc;
+            $menu->price = $request->price;
+            $menu->save();
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = $image->getClientOriginalName();
+                $image->move(public_path('storage/menu'), $imageName);
+                $imageUpload = MenuImage::query()->where('img', $menu->main_image)->firstOrFail();
+                $imageUpload->img = 'storage/menu/' . $imageName;
+                $imageUpload->save();
+                // dd($imageUpload);
+            }
+
+            DB::commit();
+
+            return redirect()->route('owner.menu.index', $cafe)->with('success', 'Berhasil mengubah data menu');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mengubah data - ' . $e->getMessage());
+        }
     }
 
     /**
@@ -80,8 +134,9 @@ class MenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cafe $cafe, $id)
     {
-        //
+        Menu::query()->find($id)->delete();
+        return redirect()->back()->with('success', 'Berhasil menghapus menu');
     }
 }

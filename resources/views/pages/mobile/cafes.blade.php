@@ -36,8 +36,8 @@
                                         </div>
                                     </div>
                                     <div class="w-100 container-button-cafe">
-                                        <a href="{{ route('cafe.show', $cafe) }}"
-                                            class="btn btn-primary btn-icon float-right mr-1 force-round-20">
+                                        <a data-url="{{ route('cafe.show', $cafe) }}"
+                                            class="btn btn-primary btn-icon btn-manage-cafe float-right mr-1 force-round-20 text-light">
                                             <i class="fas fa-angle-right"></i>
                                         </a>
                                     </div>
@@ -49,10 +49,43 @@
             </div>
         </div>
     </div>
+    <div class="w-100" style="bottom: 100px; z-index: 999; height: 61px; position: fixed; padding-right: 10px">
+        <a href="{{ url('mobile/open/form') }}"
+            class="btn btn-lg btn-icon btn-primary rounded-circle float-right h-100 px-3 pt-3" style="width: 61px">
+            <i class="fas fa-plus " style="font-size: 1.5rem"></i>
+        </a>
+    </div>
 @endsection
 @push('scripts')
+    <script src="{{ asset('library/sweetalert/dist/sweetalert.min.js') }}"></script>
     <script>
         $('#nav-item-open').addClass('nav-item-bottom-active')
+        $('.btn-manage-cafe').on('click', function() {
+            let _this = $(this)
+            swal({
+                    title: 'Lanjutkan?',
+                    text: 'Tampilan ini akan lebih maksimal jika dibuka dengan perangkat desktop, apakah anda ingin melanjutkan',
+                    icon: 'warning',
+                    buttons: {
+                        cancel: {
+                            text: "Batal",
+                            className: 'btn btn-danger',
+                            closeModal: true,
+                            visible: true,
+                        },
+                        confirm: {
+                            text: "Ya, Lanjutkan",
+                            className: 'btn btn-primary',
+                            visible: true,
+                        }
+                    },
+                    dangerMode: false,
+                })
+                .then((status) => {
+                    if (status.isConfirmed)
+                        window.location = _this.attr('data-url');
+                });
+        })
     </script>
 @endpush
 @push('style')

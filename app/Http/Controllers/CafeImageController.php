@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cafe;
+use App\Models\CafeImage;
 use Illuminate\Http\Request;
 
 class CafeImageController extends Controller
@@ -22,9 +23,9 @@ class CafeImageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Cafe $cafe)
     {
-        //
+        return view('pages.owner.form-image', compact('cafe'));
     }
 
     /**
@@ -33,9 +34,21 @@ class CafeImageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Cafe $cafe, Request $request)
     {
-        //
+        $images = $request->file('file');
+        foreach ($images as $image) {
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('storage/cafe'), $imageName);
+
+            $imageUpload = new CafeImage();
+            $imageUpload->is_priority = !CafeImage::where('cafe_id', $cafe->id)->exists();
+            $imageUpload->cafe_id = $cafe->id;
+            $imageUpload->img = 'storage/cafe/' . $imageName;
+            $imageUpload->save();
+        }
+
+        return response()->json(['success' => $imageName]);
     }
 
     /**
@@ -78,8 +91,9 @@ class CafeImageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cafe $cafe, $id)
     {
-        //
+        CafeImage::query()->find($id)->delete();
+        return redirect()->back()->with('success', 'Berhasil Menghapus foto');
     }
 }

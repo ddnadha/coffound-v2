@@ -4,20 +4,31 @@
 
 @section('main')
     <div class="main-content">
-        <div class="nav-custom">
+        <div class="nav-custom" id="topbar">
             <div class="px-4 text-center vertical-align-middle">
-                <a class="btn btn-lg px-3 rounded-circle btn-light float-left" onclick="history.back()">
-                    <i class="fas fa-angle-left fa-xl"></i>
-                </a>
-                @if ($cafe->is_fav)
-                    <a class="btn btn-lg px-3 btn-light rounded-circle text-danger float-right">
-                        <i class="fas fa-heart fa-xl"></i>
-                    </a>
-                @else
-                    <a class="btn btn-lg px-3 btn-light rounded-circle float-right">
-                        <i class="far fa-heart fa-xl"></i>
-                    </a>
-                @endif
+                <div class="row">
+                    <div class="col">
+                        <a class="btn btn-bar btn-lg px-3 rounded-circle btn-light float-left" onclick="history.back()">
+                            <i class="fas fa-angle-left fa-xl"></i>
+                        </a>
+                    </div>
+                    <div class="col pt-2 text-center">
+                        <h6 class="font-weight-bold text-dark text-name d-none">
+                            {{ strlen($cafe->name) > 10 ? substr($cafe->name, 0, 10) . '... ' : $cafe->name }}
+                        </h6>
+                    </div>
+                    <div class="col">
+                        @if ($cafe->is_fav)
+                            <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav text-danger float-right">
+                                <i class="fas fa-heart fa-xl"></i>
+                            </a>
+                        @else
+                            <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav float-right">
+                                <i class="far fa-heart fa-xl"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
         <div class="swiper mb-4" id="swiper-single-slides" style="height: 50vh !important; ">
@@ -104,7 +115,7 @@
                 <div class="swiper h-px-200 mb-4" id="swiper-multiple-slides-url">
                     <div class="swiper-wrapper">
                         @foreach ($cafe->url as $url)
-                            <div class="swiper-slide slide-menu" data-id="{{ $url->id }}"
+                            <div class="swiper-slide slide-menu mr-1 modal-tiktok" data-id="{{ $url->id }}"
                                 style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({{ asset($url->thumbnail) }})">
                             </div>
                         @endforeach
@@ -115,21 +126,25 @@
             {{-- Review ~ review --}}
             <div class="mt-5 mb-3">
                 <hr>
-                <b class="text-dark text-100rem">Anda pernah mengunjungi cafe ini ?</b>
-                <p class="text-dark text-80rem line-height-15">
-                    Bagikan pengalaman anda untuk membantu orang lain menemukan cafe tujuan mereka
-                </p>
-                <div class="d-flex mt-2">
-                    <div class="reviewer-profile mx-2"></div>
-                    <a href="{{ route('review.create', $cafe) }}">
-                        <div class="d-inline-block pl-4">
-                            @for ($i = 0; $i < 5; $i++)
-                                <i class="far fa-star text-warning text-100rem mt-2"></i>
-                            @endfor
+                @if (auth()->id() and $cafe->review->firstWhere('user_id', auth()->id()) == null)
+                    <b class="text-dark text-100rem">Anda pernah mengunjungi cafe ini ?</b>
+                    <p class="text-dark text-80rem line-height-15">
+                        Bagikan pengalaman anda untuk membantu orang lain menemukan cafe tujuan mereka
+                    </p>
+                    <div class="d-flex mt-2">
+                        <div class="reviewer-profile mx-2"
+                            style="background-image: url({{ asset($cafe->main_image) }}) !important">
                         </div>
-                    </a>
-                </div>
-                <hr>
+                        <a href="{{ route('review.create', $cafe) }}">
+                            <div class="d-inline-block pl-3">
+                                @for ($i = 0; $i < 5; $i++)
+                                    <i class="far fa-star text-warning text-100rem mt-2"></i>
+                                @endfor
+                            </div>
+                        </a>
+                    </div>
+                    <hr>
+                @endif
                 <div class="text-dark">
                     <h4 class="mt-4 mb-3 ">Review</h4>
                     @php
@@ -196,44 +211,78 @@
             {{-- End Review --}}
             {{-- Cafe Lain --}}
             <h4 class="mt-2 mb-1 text-dark">Cafe Lainnya</h4>
-            <div class="swiper" id="swiper-multiple-slides1" style="height: auto">
-                <div class="swiper-wrapper ">
-                    @foreach ($othercafe as $cafe)
-                        <div class="swiper-slide px-0">
-                            <div class="card h-100 card-body-cafe force-round-15">
-                                <div class="card-header card-header-image"
-                                    style="background-image: linear-gradient( rgba(4, 32, 72, 0), rgba(4, 32, 72, 0) ), url('{{ asset($cafe->main_image) }}');">
+            <div class="row px-2">
+                @foreach ($othercafe as $c)
+                    <div class="col-6 px-1 pb-2">
+                        <div class="card h-100 force-round-15">
+                            <div class="card-header card-header-image"
+                                style="background-image: linear-gradient( rgba(4, 32, 72, 0), rgba(4, 32, 72, 0) ), url('{{ asset($c->main_image) }}');">
+                            </div>
+                            <div class="card-body pt-3 pl-1 pr-1 text-dark card-body-cafe">
+                                <div style="height: 2.5rem">
+                                    <strong class="align-left">
+                                        {{ strlen($c->name) > 15 ? substr($c->name, 0, 15) . '... ' : $c->name }}
+                                    </strong>
                                 </div>
-                                <div class="card-body pt-3 pl-1 pr-1 text-dark card-body-cafe">
-                                    <div style="height: 2.5rem">
-                                        <strong class="align-left">
-                                            {{ strlen($cafe->name) > 15 ? substr($cafe->desc, 0, 15) . '... ' : $cafe->name }}
-                                        </strong>
+                                <div class="row mt-2">
+                                    <div class="col-2 pl-3">
+                                        <i class="fas fa-location-dot text-primary"></i>
                                     </div>
-                                    <div class="row mt-2">
-                                        <div class="col-2 pl-3">
-                                            <i class="fas fa-location-dot text-primary"></i>
-                                        </div>
-                                        <div class="col-9 px-2">
-                                            {{ ucfirst($cafe->district->name) }}
-                                        </div>
-                                        <div class="col-2 pl-3 pt-1">
-                                            <i class="fas fa-star text-warning"></i>
-                                        </div>
-                                        <div class="col-9 px-2 pt-1">
-                                            {{ $cafe->rating }}
-                                        </div>
+                                    <div class="col-9 px-2">
+                                        {{ ucfirst($c->district->name) }}
                                     </div>
-                                    <div class="w-100 container-button-cafe">
-                                        <a href="{{ route('caffee.show') }}/${val.name.replace(" ", " _")}"
-                                            class="btn btn-primary btn-icon float-right mr-1 force-round-20">
-                                            <i class="fas fa-angle-right"></i>
-                                        </a>
+                                    <div class="col-2 pl-3 pt-1">
+                                        <i class="fas fa-star text-warning"></i>
                                     </div>
+                                    <div class="col-9 px-2 pt-1">
+                                        {{ $c->rating }}
+                                    </div>
+                                </div>
+                                <div class="w-100 container-button-cafe">
+                                    <a href="{{ route('caffee.show') }}/{{ str_replace(' ', '_', $c) }}"
+                                        class="btn btn-primary btn-icon float-right mr-1 force-round-20">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    </div>
+                @endforeach
+            </div>
+            {{-- End Cafe Lain --}}
+        </div>
+    </div>
+    {{-- modal --}}
+    <div class="modal fade" tabindex="-1" role="dialog" id="tiktokModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header p-0 pr-3 pt-2">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-body-tiktok" id="video-container">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="menuModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header p-0 pr-3 pt-2">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <img id="img-modal-menu" src="{{ asset($menu->main_image) }}" alt=""
+                            style="width: 100%; margin-bottom: 1rem">
+                        <h4 id="text-modal-name" style="margin-bottom: 0.5rem">{{ $menu->name }}</h4>
+                        <h6 id="text-modal-price" style="margin-bottom: 0.5rem">Rp.
+                            {{ number_format($menu->price, 0, ',', '.') }}</h6>
+                        <p class="mb-0" id="text-modal-desc">{{ $menu->desc }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,6 +291,104 @@
 @push('scripts')
     <script src="{{ asset('assets/vendor/libs/leaflet/leaflet.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
+    <script>
+        $(window).scroll(function() {
+            var scroll = $(window).scrollTop();
+            console.log(scroll)
+            if (scroll >= 100) {
+                $("#topbar").addClass("bg-white");
+                $('.btn-bar').removeClass('btn btn-circle btn-light')
+                $('.btn-bar').addClass('py-0')
+                $('.text-name').addClass('d-block')
+                $('.text-name').removeClass('d-none')
+            } else {
+                $("#topbar").removeClass("bg-white");
+                $('.btn-bar').addClass('btn btn-circle btn-light')
+                $('.btn-bar').removeClass('py-0')
+                $('.text-name').addClass('d-none')
+                $('.text-name').removeClass('d-block')
+            }
+        });
+        $(document).ready(function() {
+            $('.modal-tiktok').on('click', function() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url('/api/embed') }}/" + $(this).attr('data-id'),
+                    async: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        $('#video-container').html(result.html)
+                        $('#tiktokModal').modal('show')
+                    }
+                });
+            })
+
+            $('.slide-menu').on('click', function() {
+                $.ajax({
+                    type: 'GET',
+                    url: `{{ url('/api/menu/') }}/` + $(this).attr('data-id'),
+                    async: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        let _name = result.data.name.length > 23 ? result.data.name.slice(0,
+                                20) + `...` :
+                            result.data.name
+                        console.log(result)
+                        $('#img-modal-menu').attr('src', result.data.image)
+                        $('#text-modal-name').html(_name)
+                        $('#text-modal-price').html(result.data.price)
+                        $('#text-modal-desc').html(result.data.desc)
+                        $('#menuModal').modal('show')
+                    }
+                })
+            })
+
+            $('.btn-fav').on('click', function() {
+                let _this = $(this)
+                $.ajax({
+                    type: 'POST',
+                    url: `{{ url('mobile/caffe/fav') }}`,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    async: false,
+                    dataType: 'json',
+                    data: {
+                        cafe: {{ $cafe->id }}
+                    },
+                    success: function(result) {
+                        if (result.status) {
+                            if (result.message ==
+                                "Berhasil menambahkan cafe ke daftar favorit") {
+                                _this.html('<i class="fas fa-heart text-danger"></i>')
+                            } else if (result.message ==
+                                "Berhasil menghapus cafe dari daftar favorit") {
+                                _this.html('<i class="far fa-heart text-black"></i>')
+                            }
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        if (errorThrown == 'Unauthorized') {
+                            window.location = "{{ route('login') }}"
+                        }
+                    }
+                });
+
+            })
+            $('html').on('click', '#text-desc-cafe', function() {
+                if (isDescExpanded) {
+                    $('#text-desc-parent').html('{{ substr($cafe->desc, 0, 106) }}' +
+                        ' <span id="text-desc-cafe" style="color: #0957DE">Selebihnya</span>')
+                    isDescExpanded = false
+                } else {
+                    $('#text-desc-parent').html('{{ $cafe->desc }}' +
+                        ' <span id="text-desc-cafe" style="color: #0957DE">Lebih Sedikit</span>')
+                    isDescExpanded = true
+                }
+
+            })
+        })
+    </script>
     <script>
         let isDescExpanded = false
         //map and its bussiness
@@ -293,19 +440,6 @@
                 }
             });
         })
-        $(window).scroll(function() {
-            var scroll = $(window).scrollTop();
-
-            if (scroll >= 100) {
-                $("#topbar").addClass("bg-white");
-                $('.btn-bar').removeClass('btn btn-circle btn-light')
-                $('.btn-bar').addClass('btn-bar-scrolled')
-            } else {
-                $("#topbar").removeClass("bg-white");
-                $('.btn-bar').addClass('btn btn-circle btn-light')
-                $('.btn-bar').removeClass('btn-bar-scrolled')
-            }
-        });
     </script>
 @endpush
 @push('style')
@@ -374,6 +508,25 @@
 
         .badge {
             padding: 8px 12px;
+        }
+    </style>
+
+    {{-- modal styling --}}
+    <style>
+        .tiktok-embed {
+            margin: 0 !important;
+        }
+
+        .modal-body-tiktok {
+            padding: 0 !important;
+        }
+
+        blockquote {
+            padding: 20px !important;
+        }
+
+        .btn-bar-scrolled {
+            color: #061C49;
         }
     </style>
 @endpush

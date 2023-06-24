@@ -25,14 +25,14 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-success">
-                        <i class="fas fa-mug-hot"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Menu</h4>
+                            <h4>Pengguna</h4>
                         </div>
                         <div class="card-body">
-                            {{ $jumlah_menu }}
+                            {{ $jumlah_user }}
                         </div>
                     </div>
                 </div>
@@ -55,14 +55,14 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-warning">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-eye"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Rating</h4>
+                            <h4>Total Kunjungan</h4>
                         </div>
                         <div class="card-body">
-                            {{ $jumlah_rating }}
+                            {{ $jumlah_visit }}
                         </div>
                     </div>
                 </div>

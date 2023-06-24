@@ -29,7 +29,8 @@
                             Yuk, jadikan caffeemu lebih maju dan berkembang dengan bergabung ke platform kami !
                             Bergabunglah sekarang dan rasakan manfaatnya untuk caffeemu!
                         </p>
-                        <a id="btn-join" class="btn btn-primary text-white">Gabung Sekarang !</a>
+                        <a href="{{ route('caffe.open.form') }}" id="btn-join" class="btn btn-primary text-white">Gabung
+                            Sekarang !</a>
                     </div>
                 @endif
             </div>

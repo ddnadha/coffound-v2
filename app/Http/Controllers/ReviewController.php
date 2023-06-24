@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cafe;
 use App\Models\ReportReview;
+use App\Models\Review;
+use App\Models\ReviewMessage;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -12,10 +15,15 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cafe $cafe = null)
     {
-        $review = ReportReview::query()->latest()->get();
-        return view('pages.report.review.index', compact('review'));
+        if ($cafe == null) {
+            $review = ReportReview::query()->latest()->get();
+            return view('pages.report.review.index', compact('review'));
+        } else {
+            $review = Review::query()->where('cafe_id', $cafe->id)->latest()->get();
+            return view('pages.owner.review', compact('cafe', 'review'));
+        }
     }
 
     /**
@@ -82,5 +90,16 @@ class ReviewController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function reply(Cafe $cafe, Request $request)
+    {
+        $rm = new ReviewMessage();
+        $rm->review_id = $request->review_id;
+        $rm->user_id = auth()->id();
+        $rm->message = $request->message;
+        $rm->save();
+
+        return redirect()->back()->with('success', 'Berhasil membalas review');
     }
 }

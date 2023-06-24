@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('css/nav-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/mobile.css') }}">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .pl-1 {
             padding-left: 0.5rem !important
@@ -40,8 +42,9 @@
             <!-- Content -->
             <div style="min-height: 90vh">
                 @yield('main')
-                @include('components.mobile.nav')
+
             </div>
+            @include('components.mobile.nav')
         </div>
     </div>
 

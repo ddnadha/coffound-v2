@@ -1,0 +1,107 @@
+.wrapper {
+    width: 100%;
+    background: none;
+    /* margin: 30px auto; */
+}
+.photo_submit-container {
+    display: flex;
+    /* max-width: 800px; */
+    width: 100%;
+    margin: 0 auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: left;
+    padding: 0;
+}
+.photo_submit {
+    margin: 0px 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+.photo_submit:hover {
+    cursor: pointer;
+    background: #ebebeb;
+}
+
+.photo_submit.photo_submit--image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.photo_submit.photo_submit--image:hover {
+    cursor: default;
+}
+.photo_submit-input {
+    display: none;
+}
+.photo_submit-plus {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #0b57dc;
+    pointer-events: none;
+}
+.photo_submit-plus:after {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    transform: translate(-46%, -52%);
+    content: "+";
+    font-size: 12px;
+    color: #fff;
+}
+.photo_submit--image .photo_submit-plus {
+    display: none;
+}
+.photo_submit-uploadLabel {
+    margin-top: 10px;
+    font-size: 12px;
+    color: cadetblue;
+    /* letter-spacing: 0.03em; */
+    pointer-events: none;
+}
+.photo_submit--image .photo_submit-uploadLabel {
+    display: none;
+}
+.photo_submit-delete {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background: #f8f8f8;
+    border-radius: 50%;
+    text-indent: -9999px;
+    cursor: pointer;
+}
+.photo_submit-delete:before,
+.photo_submit-delete:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 12px;
+    background-color: #0b57dc;
+    content: "";
+}
+.photo_submit-delete:before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.photo_submit-delete:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+.photo_submit-delete:hover {
+    background: #ccc;
+}
+.photo_submit--image .photo_submit-delete {
+    display: inline-block;
+}

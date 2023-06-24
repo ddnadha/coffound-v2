@@ -19,8 +19,9 @@
                                 <th>#</th>
                                 <th>Terlapor</th>
                                 <th>Laporan</th>
+                                <th>Status</th>
                                 <th>Waktu Laporan</th>
-                                <th>Tindak Lanjut</th>
+                                <th class="text-center">Tindak Lanjut</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,20 +37,39 @@
                                         @endforeach
                                     </td>
                                     <td>
+                                        @if ($r->cafe->status == 'suspended')
+                                            <div class="badge badge-warning">
+                                                Suspended
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td>
                                         {{ $r->created_at->diffForHumans() }}
                                     </td>
                                     <td class="text-center">
                                         <form action="{{ route('admin.report.destroy', $r) }}" method="POST">
                                             @csrf
-                                            <a href="{{ route('admin.report.show', $r) }}"
-                                                class="btn btn-icon btn-warning btn-sm">
-                                                <i class="fas fa-ban"></i>
+                                            <a class="btn btn-icon btn-primary"
+                                                href="{{ url('/mobile/caffee') }}/{{ str_replace(' ', '_', $r->cafe->name) }}">
+                                                <i class="fas fa-eye"></i> Lihat Cafe
                                             </a>
+                                            @if ($r->cafe->status == 'suspended')
+                                                <a href="{{ route('admin.cafe.verify', $r->cafe) }}"
+                                                    class="btn btn-icon btn-success">
+                                                    <i class="fas fa-check"></i> Verify
+                                                </a>
+                                            @else
+                                                <a href="{{ route('admin.cafe.suspend', $r->cafe) }}"
+                                                    class="btn btn-icon btn-warning">
+                                                    <i class="fas fa-ban"></i> Suspend
+                                                </a>
+                                            @endif
+
                                             {{ method_field('DELETE') }}
-                                            <button class="btn btn-sm btn-danger"
+                                            <button class="btn btn-danger btn-icon"
                                                 onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')"
                                                 type="submit">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash"></i> Hapus
                                             </button>
                                         </form>
                                     </td>

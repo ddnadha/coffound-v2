@@ -56,11 +56,11 @@
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h4>Daftar Menu</h4>
+                            <h4>Video Tiktok</h4>
                             <div class="card-header-action">
-                                <a href="{{ route('owner.menu.create', $cafe) }}" class="btn btn-primary btn-icon">
-                                    <i class="fas fa-plus"></i> Tambah Menu
-                                </a>
+                                <button data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-icon">
+                                    <i class="fas fa-plus"></i> Tambah Video
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -92,6 +92,44 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" tabindex="-1" role="dialog" id="exampleModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Video</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Pastikan tautan yang kamu masukkan dapat dibuka</p>
+                    <form id="form-url" action="{{ route('owner.url.store', $cafe) }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="url">Link ke Video Tiktok</label>
+                            <input type="text" name="url" id="url" class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-whitesmoke br">
+                    <button type="button" class="btn btn-icon btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times-circle mr-1"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-icon btn-primary btn-save">
+                        <i class="fas fa-save mr-1"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('style')
+@endpush
+
+@push('scripts')
+    <script>
+        $('.btn-save').click(function() {
+            $('#form-url').submit()
+        })
+    </script>
 @endpush

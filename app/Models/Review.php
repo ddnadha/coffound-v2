@@ -22,7 +22,7 @@ class Review extends Model
 
     public function message()
     {
-        return $this->hasMany(ReviewMessage::class);
+        return $this->hasOne(ReviewMessage::class);
     }
 
     public function report()

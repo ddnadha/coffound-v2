@@ -14,7 +14,7 @@ $role = $user->priv;
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
             <li class="nav-item">
-                <a href="{{ $role == 'admin' ? url('/admin/home') : url('/owner/home') }}" class="nav-link">
+                <a href="{{ $role == 'admin' ? url('/admin/') : url('/owner/') }}" class="nav-link">
                     <i class="fas fa-fire"></i>
                     <span>Dashboard</span>
                 </a>

@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Dashboard</h1>
+            <h1>{{ $cafe->name }}</h1>
         </div>
         <div class="col-md-12">
             <div class="row mt-sm-4">

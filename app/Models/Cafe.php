@@ -34,7 +34,7 @@ class Cafe extends Model
 
     public function review()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class)->latest();
     }
 
     public function menu()
@@ -64,9 +64,9 @@ class Cafe extends Model
     protected function mainImage(): Attribute
     {
         $img = CafeImage::where('cafe_id', $this->id);
-        if (!$img->exists()) {
+        if (!(clone $img)->exists()) {
             $main_image = 'storage/cafe/default.jpg';
-        } elseif ($img->where('is_priority', 1)->exists()) {
+        } elseif ((clone $img)->where('is_priority', 1)->exists()) {
             $main_image =  $img->where('is_priority', 1)->first()->img;
         } else {
             $main_image = $img->first()->img;
