@@ -59,4 +59,23 @@ class CafeController extends Controller
             ]);
         }
     }
+
+    public function show($id)
+    {
+        $cafe = Cafe::find($id);
+        if ($cafe) {
+            $cafe->{'img'} = asset($cafe->main_image);
+            $cafe->{'whatsapp_url'} = 'https://wa.me/+62' . ltrim($cafe->user->phone, '0');
+            $cafe->{'url'} = route('caffee.show') . '/' . str_replace(' ', '_', $cafe->name);
+            return response()->json([
+                'status' => true,
+                'data' => $cafe,
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kafe Tidak Ditemukan',
+            ]);
+        }
+    }
 }

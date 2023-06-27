@@ -10,15 +10,18 @@ class Report extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function image(){
+    public function image()
+    {
         return $this->hasMany(ReportImage::class);
     }
 
-    public function cafe(){
-        return $this->belongsTo(Cafe::class);
+    public function cafe()
+    {
+        return $this->belongsTo(Cafe::class)->withTrashed();
     }
 }

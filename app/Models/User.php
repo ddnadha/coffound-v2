@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cafe::class);
     }
+
+    public function notif()
+    {
+        return $this->hasMany(Notif::class)->latest();
+    }
 }

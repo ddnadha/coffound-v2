@@ -2552,7 +2552,7 @@ a.dropdown-item.active {
 .dropdown-list .dropdown-list-content:not(.is-end):after {
     content: " ";
     position: absolute;
-    bottom: 46px;
+    bottom: -60px;
     left: 0;
     width: 100%;
     background-image: linear-gradient(

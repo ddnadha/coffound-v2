@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Cafe;
 use App\Models\Favourite;
 use App\Models\Province;
+use App\Models\Review;
+use App\Models\ReviewImage;
+use App\Models\ReviewMessage;
 use App\Models\Visit;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MobileController extends Controller
 {
@@ -89,8 +95,11 @@ class MobileController extends Controller
         return view('pages.mobile.profile');
     }
 
-    public function menu(Request $request)
+    public function menu(Request $request, $name)
     {
+        $cafe = Cafe::where('name', str_replace('_', ' ', $name))->first();
+        if ($cafe == null) abort(404);
+        return view('pages.mobile.menu', compact('cafe'));
     }
 
     public function makeFav(Request $request)
@@ -113,6 +122,59 @@ class MobileController extends Controller
                 'status' => true,
                 'message' => 'Berhasil menghapus cafe dari daftar favorit'
             ]);
+        }
+    }
+
+    public function createReview(Cafe $cafe)
+    {
+        return view('pages.mobile.review', compact('cafe'));
+    }
+
+    public function storeReview(Cafe $cafe, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            if ($request->has('review_id')) {
+                $review = Review::findOrFail($request->review_id);
+            } else {
+                //save review to database
+                $review = new Review();
+                $review->cafe_id = $cafe->id;
+                $review->user_id = auth()->id();
+                $review->rating = $request->rate;
+                $review->save();
+
+                $cafe->rating = Review::where('cafe_id', $cafe->id)->whereDoesntHave('report')->avg('rating') ?? 0;
+                $cafe->save();
+            }
+
+            //save message of review to database
+            $review_msg = new ReviewMessage();
+            $review_msg->review_id = $review->id;
+            $review_msg->user_id = auth()->id();
+            $review_msg->message = $request->review;
+            $review_msg->save();
+
+            //save image of message
+            $image = $request->file('image');
+            if (is_array($image)) {
+                foreach ($image as $i) {
+                    $imageName = uniqid() . $i->getClientOriginalName();
+                    $i->move(public_path('storage/review'), $imageName);
+
+                    $img = new ReviewImage();
+                    $img->review_message_id = $review_msg->id;
+                    $img->img = 'storage/review/' . $imageName;
+                    $img->save();
+                }
+            }
+
+            DB::commit();
+            return redirect()->to("mobile/caffee/" . str_replace(" ", "_", $cafe->name))->with('success', 'Berhasil menambahkan review');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            dd($e->getMessage());
         }
     }
 }

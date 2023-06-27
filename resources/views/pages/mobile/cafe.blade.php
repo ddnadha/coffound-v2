@@ -7,26 +7,34 @@
         <div class="nav-custom" id="topbar">
             <div class="px-4 text-center vertical-align-middle">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-2">
                         <a class="btn btn-bar btn-lg px-3 rounded-circle btn-light float-left" onclick="history.back()">
                             <i class="fas fa-angle-left fa-xl"></i>
                         </a>
                     </div>
-                    <div class="col pt-2 text-center">
+                    <div class="col-8 pt-2 text-center">
                         <h6 class="font-weight-bold text-dark text-name d-none">
-                            {{ strlen($cafe->name) > 10 ? substr($cafe->name, 0, 10) . '... ' : $cafe->name }}
+                            Detail Cafe
                         </h6>
                     </div>
-                    <div class="col">
-                        @if ($cafe->is_fav)
-                            <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav text-danger float-right">
-                                <i class="fas fa-heart fa-xl"></i>
-                            </a>
-                        @else
-                            <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav float-right">
+                    <div class="col-2">
+                        @auth
+                            @if ($cafe->is_fav)
+                                <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav text-danger float-right">
+                                    <i class="fas fa-heart fa-xl"></i>
+                                </a>
+                            @else
+                                <a class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav float-right">
+                                    <i class="far fa-heart fa-xl"></i>
+                                </a>
+                            @endif
+                        @endauth
+                        @guest
+                            <a href="{{ route('login') }}"
+                                class="btn btn-bar btn-lg px-3 btn-light rounded-circle btn-fav float-right">
                                 <i class="far fa-heart fa-xl"></i>
                             </a>
-                        @endif
+                        @endguest
                     </div>
                 </div>
             </div>
@@ -45,7 +53,17 @@
         </div>
         <div class="container px-3">
             {{-- Data Cafe --}}
-            <h3 class="text-dark">{{ $cafe->name }}</h3>
+            <div class="row">
+                <div class="col-10">
+                    <h3 class="text-dark">{{ $cafe->name }}</h3>
+                </div>
+                <div class="col-2 text-center pt-1">
+                    <a target="_blank" href="{{ 'https://wa.me/+62' . ltrim($cafe->user->phone, '0') }}">
+                        <i class="fab fa-whatsapp text-success" style="font-size: 1.5rem !important"></i>
+                    </a>
+
+                </div>
+            </div>
             <div class="row">
                 <div class="col-1 pl-3">
                     <i class="fas fa-lg fa-location-dot text-primary"></i>
@@ -69,148 +87,157 @@
             <h4 class="mt-4 mb-3 text-dark">Lokasi</h4>
             <div class="leaflet-map" id="map" style="height: 25vh;"></div>
             {{-- Menu --}}
-            <div class="row mt-5 mb-2">
-                <div class="col-8">
-                    <h4 class="text-dark">Menu di Cafe ini</h4>
-                </div>
-                <div class="col-4 mt-1 float-right">
-                    Lebih banyak
-                </div>
-                <div class="col-12">
-                    <div class="swiper mb-4" id="swiper-multiple-slides">
-                        <div class="swiper-wrapper">
-                            @foreach ($cafe->menu->take(5) as $menu)
-                                <div class="swiper-slide slide-menu" data-id="{{ $menu->id }}"
-                                    style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) ), url({{ asset($menu->main_image) }})">
-                                    <div class="d-flex flex-column h-100">
-                                        <div class="d-flex justify-content-start align-items-end" style="flex: 1;">
-                                            <p class="text-100rem mb-2">
-                                                {{ strlen($menu->name) > 17 ? substr($menu->name, 0, 14) . '... ' : $menu->name }}
-                                            </p>
+            @if (!$cafe->menu->isEmpty())
+                <div class="row mt-5 mb-2">
+                    <div class="col-8">
+                        <h4 class="text-dark">Menu di Cafe ini</h4>
+                    </div>
+                    <div class="col-4 mt-1 float-right text-right">
+                        <a href="{{ Request::url() . '/menu' }}">Semua</a>
+                    </div>
+                    <div class="col-12">
+                        <div class="swiper mb-4" id="swiper-multiple-slides">
+                            <div class="swiper-wrapper">
+                                @foreach ($cafe->menu->take(5) as $menu)
+                                    <div class="swiper-slide slide-menu" data-id="{{ $menu->id }}"
+                                        style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) ), url({{ asset($menu->main_image) }})">
+                                        <div class="d-flex flex-column h-100">
+                                            <div class="d-flex justify-content-start align-items-end" style="flex: 1;">
+                                                <p class="text-100rem mb-2">
+                                                    {{ strlen($menu->name) > 17 ? substr($menu->name, 0, 14) . '... ' : $menu->name }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Tema Suasana ~ tema --}}
+            @if (!$cafe->category->isEmpty())
+                <h4 class="mt-5 mb-2 text-dark">Tema dan Suasana</h4>
+                <div class="">
+                    @foreach ($cafe->category as $c)
+                        <div class="badge mr-1 mt-2 badge-primary">
+                            @if ($c->category->icon != null)
+                                <i class="{{ $c->category->icon }}"></i> &nbsp;
+                            @endif
+                            {{ ucfirst($c->category->name) }}
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Tiktok ~ tiktok --}}
+            @if (!$cafe->url->isEmpty())
+                <h4 class="mt-4 mb-2 text-dark">Video</h4>
+                <div class="d-flex align-items-start align-items-sm-center gap-4 h-px-200">
+                    <div class="swiper h-px-200 mb-4" id="swiper-multiple-slides-url">
+                        <div class="swiper-wrapper">
+                            @foreach ($cafe->url as $url)
+                                <div class="swiper-slide slide-menu mr-2 modal-tiktok" data-id="{{ $url->id }}"
+                                    style="border-radius: 0.5rem; background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({{ asset($url->thumbnail) }})">
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {{-- Tema Suasana ~ tema --}}
-            <h4 class="mt-5 mb-2 text-dark">Tema dan Suasana</h4>
-            <div class="">
-                @foreach ($cafe->category as $c)
-                    <div class="badge mr-1 mt-2 badge-primary">
-                        @if ($c->category->icon != null)
-                            <i class="{{ $c->category->icon }}"></i> &nbsp;
-                        @endif
-                        {{ ucfirst($c->category->name) }}
-                    </div>
-                @endforeach
-            </div>
-
-            {{-- Tiktok ~ tiktok --}}
-            <h4 class="mt-5 mb-1 text-dark">Video</h4>
-            <div class="d-flex align-items-start align-items-sm-center gap-4 h-px-200">
-                <div class="swiper h-px-200 mb-4" id="swiper-multiple-slides-url">
-                    <div class="swiper-wrapper">
-                        @foreach ($cafe->url as $url)
-                            <div class="swiper-slide slide-menu mr-1 modal-tiktok" data-id="{{ $url->id }}"
-                                style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({{ asset($url->thumbnail) }})">
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+            @endif
 
             {{-- Review ~ review --}}
-            <div class="mt-5 mb-3">
+            <div class="mt-3 mb-3">
                 <hr>
-                @if (auth()->id() and $cafe->review->firstWhere('user_id', auth()->id()) == null)
-                    <b class="text-dark text-100rem">Anda pernah mengunjungi cafe ini ?</b>
-                    <p class="text-dark text-80rem line-height-15">
-                        Bagikan pengalaman anda untuk membantu orang lain menemukan cafe tujuan mereka
-                    </p>
-                    <div class="d-flex mt-2">
-                        <div class="reviewer-profile mx-2"
-                            style="background-image: url({{ asset($cafe->main_image) }}) !important">
-                        </div>
-                        <a href="{{ route('review.create', $cafe) }}">
-                            <div class="d-inline-block pl-3">
-                                @for ($i = 0; $i < 5; $i++)
-                                    <i class="far fa-star text-warning text-100rem mt-2"></i>
-                                @endfor
-                            </div>
-                        </a>
+                {{-- @if (auth()->id() and $cafe->review->firstWhere('user_id', auth()->id()) == null) --}}
+                <b class="text-dark text-100rem">Anda pernah mengunjungi cafe ini ?</b>
+                <p class="text-dark text-80rem line-height-15">
+                    Bagikan pengalaman anda untuk membantu orang lain menemukan cafe tujuan mereka
+                </p>
+                <div class="d-flex mt-2">
+                    <div class="reviewer-profile mx-2"
+                        style="background-image: url({{ asset($cafe->main_image) }}) !important">
                     </div>
-                    <hr>
-                @endif
-                <div class="text-dark">
-                    <h4 class="mt-4 mb-3 ">Review</h4>
-                    @php
-                        if ($cafe->review->first()) {
-                            $review_id = $cafe->review->first()->id;
-                        }
-                    @endphp
-                    @foreach ($cafe->review->take(5) as $review)
-                        @foreach ($review->messages as $message)
-                            <div class="w-100 mt-2 mb-3"
-                                @if ($message != $review->messages->first()) style="margin-top: 20px; padding-left: 20px" @endif>
-                                <div class="row">
-                                    <div class="col-2">
-                                        <div class="reviewer-profile mr-3"
-                                            style="background-image: url('{{ asset($review->user->img) }}');">
+                    <a href="{{ route('mobile.review.create', $cafe) }}">
+                        <div class="d-inline-block pl-3">
+                            @for ($i = 0; $i < 5; $i++)
+                                <i class="far fa-star text-warning text-100rem mt-2"></i>
+                            @endfor
+                        </div>
+                    </a>
+                </div>
+                <hr>
+                {{-- @endif --}}
+                @if (!$cafe->review->isEmpty())
+                    <div class="text-dark">
+                        <h4 class="mt-4 mb-3 ">Review</h4>
+                        @php
+                            if ($cafe->review->first()) {
+                                $review_id = $cafe->review->first()->id;
+                            }
+                        @endphp
+                        @foreach ($cafe->review->take(5) as $review)
+                            @foreach ($review->messages as $message)
+                                <div class="w-100 mt-2 mb-3"
+                                    @if ($message != $review->messages->first()) style="margin-top: 20px; padding-left: 20px" @endif>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <div class="reviewer-profile mr-3"
+                                                style="background-image: url('{{ asset($review->user->img) }}');">
+                                            </div>
+                                        </div>
+                                        <div class="col-10 p-0 pt-2 text-100rem font-weight-bold">
+                                            {{ $message->user->name }}
                                         </div>
                                     </div>
-                                    <div class="col-10 p-0 pt-2 text-100rem font-weight-bold">
-                                        {{ $message->user->name }}
-                                    </div>
+                                    @if ($message == $review->messages->first())
+                                        <div class="stars-container my-2 d-inline-block">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= $review->rating)
+                                                    <i class="fas fa-star text-warning vertical-align-middle"></i>
+                                                @else
+                                                    <i class="far fa-star text-warning vertical-align-middle"></i>
+                                                @endif
+                                            @endfor
+                                            <span class="text-80rem p-1 h-100">
+                                                {{ $message->created_at->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                        <p class="pr-0 text-100rem mb-0">
+                                            {{ $message->message }}
+                                        </p>
+                                    @else
+                                        <div class="stars-container my-2 d-inline-block">
+                                            <span class="text-80rem p-1 h-100">
+                                                {{ $message->created_at->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                        <p class="pr-0 text-100rem">
+                                            {{ $message->message }}
+                                        </p>
+                                    @endif
+                                    @foreach ($message->image as $image)
+                                        <img class="img-review" src="{{ asset($image->img) }}" alt=""
+                                            style="width: 50px; height: 50px; margin-top: 10px">
+                                    @endforeach
                                 </div>
-                                @if ($message == $review->messages->first())
-                                    <div class="stars-container my-2 d-inline-block">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $review->rating)
-                                                <i class="fas fa-star text-warning vertical-align-middle"></i>
-                                            @else
-                                                <i class="far fa-star text-warning vertical-align-middle"></i>
-                                            @endif
-                                        @endfor
-                                        <span class="text-80rem p-1 h-100">
-                                            {{ $message->created_at->format('d M Y') }}
-                                        </span>
-                                    </div>
-                                    <p class="pr-0 text-100rem mb-0">
-                                        {{ $message->message }}
-                                    </p>
-                                @else
-                                    <div class="stars-container my-2 d-inline-block">
-                                        <span class="text-80rem p-1 h-100">
-                                            {{ $message->created_at->format('d M Y') }}
-                                        </span>
-                                    </div>
-                                    <p class="pr-0 text-100rem">
-                                        {{ $message->message }}
-                                    </p>
-                                @endif
-                                @foreach ($message->image as $image)
-                                    <img src="{{ asset($image->img) }}" alt=""
-                                        style="width: 50px; height: 50px; margin-top: 10px">
-                                @endforeach
-                            </div>
+                            @endforeach
+                            @php
+                                if ($review_id != $review->id or $review == $cafe->review->last()) {
+                                    $review_id = $review->id;
+                                    echo '<hr>';
+                                }
+                                
+                            @endphp
                         @endforeach
-                        @php
-                            if ($review_id != $review->id or $review == $cafe->review->last()) {
-                                $review_id = $review->id;
-                                echo '<hr>';
-                            }
-                            
-                        @endphp
-                    @endforeach
-                </div>
+                    </div>
+                @endif
             </div>
             {{-- End Review --}}
+
             {{-- Cafe Lain --}}
-            <h4 class="mt-2 mb-1 text-dark">Cafe Lainnya</h4>
+            <h4 class="mt-2 mb-2 text-dark">Cafe Lainnya</h4>
             <div class="row px-2">
                 @foreach ($othercafe as $c)
                     <div class="col-6 px-1 pb-2">
@@ -267,26 +294,24 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="menuModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header p-0 pr-3 pt-2">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <img id="img-modal-menu" src="{{ asset($menu->main_image) }}" alt=""
-                            style="width: 100%; margin-bottom: 1rem">
-                        <h4 id="text-modal-name" style="margin-bottom: 0.5rem">{{ $menu->name }}</h4>
-                        <h6 id="text-modal-price" style="margin-bottom: 0.5rem">Rp.
-                            {{ number_format($menu->price, 0, ',', '.') }}</h6>
-                        <p class="mb-0" id="text-modal-desc">{{ $menu->desc }}</p>
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center" role="document">
+                <div class="modal-content mx-2">
+                    <div class="modal-body rounded">
+                        <div>
+                            <img id="img-modal-menu" alt=""
+                                style="width: 100%; margin-bottom: 1rem; border-radius: 10px">
+                            <h4 id="text-modal-name" style="margin-bottom: 0.5rem"></h4>
+                            <p class="" id="text-modal-desc"></p>
+                            <h6 id="text-modal-price" style="margin-bottom: 0.5rem">Rp.
+                            </h6>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @include('components.modal')
 @endsection
 @push('scripts')
     <script src="{{ asset('assets/vendor/libs/leaflet/leaflet.js') }}"></script>
@@ -363,8 +388,9 @@
                                 _this.html('<i class="fas fa-heart text-danger"></i>')
                             } else if (result.message ==
                                 "Berhasil menghapus cafe dari daftar favorit") {
-                                _this.html('<i class="far fa-heart text-black"></i>')
+                                _this.html('<i class="far fa-heart text-dark"></i>')
                             }
+                            showToast(result.message);
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -374,6 +400,10 @@
                     }
                 });
 
+            })
+            $('.img-review').on('click', function() {
+                $('#img-modal-review').attr('src', $(this).attr('src'));
+                $('#reviewModal').modal('show')
             })
             $('html').on('click', '#text-desc-cafe', function() {
                 if (isDescExpanded) {
@@ -510,7 +540,21 @@
             padding: 8px 12px;
         }
     </style>
+    <style>
+        .vertical-alignment-helper {
+            display: table;
+            height: 100%;
+            width: 100%;
+            pointer-events: none;
+        }
 
+        .vertical-align-center {
+            /* To center vertically */
+            display: table-cell;
+            vertical-align: middle;
+            pointer-events: none;
+        }
+    </style>
     {{-- modal styling --}}
     <style>
         .tiktok-embed {
@@ -527,6 +571,17 @@
 
         .btn-bar-scrolled {
             color: #061C49;
+        }
+
+        .modal-content {
+            /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+            width: inherit;
+            max-width: inherit;
+            /* For Bootstrap 4 - to avoid the modal window stretching full width */
+            height: inherit;
+            /* To center horizontally */
+            margin: 0 auto;
+            pointer-events: all;
         }
     </style>
 @endpush

@@ -7,35 +7,7 @@
         </div>
         <div class="col-md-12">
             <div class="row mt-sm-4">
-                <div class="col-12 col-md-12 col-lg-5">
-                    <div class="card profile-widget">
-                        <div class="profile-widget-header">
-                            <img alt="image" src="{{ asset($cafe->main_image) }}" height="100" style="object-fit: cover"
-                                class="rounded-circle profile-widget-picture">
-                            <div class="profile-widget-items">
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Kunjungan</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->visit->count() }}</div>
-                                </div>
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Ulasan</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->review->count() }}</div>
-                                </div>
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Rating</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->rating }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="profile-widget-description">
-                            <div class="profile-widget-name text-dark font-weight-bold">
-                                {{ $cafe->name }}
-                            </div>
-                            {{ $cafe->desc }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-12 col-lg-7">
+                <div class="col-12 col-md-12 col-lg-12">
                     @include('components.owner-nav')
                     <div class="card">
                         <div class="card-header">
@@ -48,8 +20,8 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                @foreach ($cafe->image as $image)
-                                    <div class="col-md-4 col-sm-6 px-2 my-2">
+                                @foreach ($image as $image)
+                                    <div class="col-md-3 col-sm-6 px-2 my-2">
                                         <div>
                                             <img src="{{ asset($image->img) }}" class="wh-px-200" alt="">
                                             <div class="w-100 px-4" style="position: absolute; top: 5px;">
@@ -63,6 +35,13 @@
                                                         style="padding: 2px 10px">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
+                                                    @if (!$image->is_priority)
+                                                        <a href="{{ route('owner.image.pin', [$cafe, $image]) }}"
+                                                            class="btn btn-icon btn-warning float-right btn-sm text-white mr-1"
+                                                            style="padding: 2px 10px">
+                                                            <i class="fas fa-thumbtack"></i>
+                                                        </a>
+                                                    @endif
                                                 </form>
                                             </div>
                                         </div>

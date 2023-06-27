@@ -29,6 +29,7 @@ Route::get('/embed/{url}', [EmbedController::class, 'show']);
 //cafe
 Route::get('/cafe', [CafeController::class, 'index']);
 Route::post('/cafe/fav', [CafeController::class, 'fav']);
+Route::get('/cafe/{id}', [CafeController::class, 'show']);
 
 //category
 Route::post('/category', [CategoryController::class, 'store']);

@@ -10,7 +10,8 @@
     <div class="main-content">
         <div class="section">
             <div class="section-body">
-                @if (auth()->check() and auth()->user()->cafe)
+                @if (auth()->check() and
+                        !auth()->user()->cafe->isEmpty())
                     <div class="container text-center" style="padding-top: 30%; height: 100vh">
                         <img style="max-width: 100%" src="{{ asset('assets/img/8354051_3883064.jpg') }}" alt="">
                         <h1 style="font-size: 24px; font-weight: 700">Terima kasih sudah mendaftarkan cafe mu di coffound !

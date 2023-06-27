@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ActivationController;
 use App\Http\Controllers\CafeController;
 use App\Http\Controllers\CafeImageController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DeletionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MobileController;
@@ -35,9 +37,13 @@ Route::prefix('mobile')->group(function () {
     Route::get('/open/form', [MobileController::class, 'openForm'])->name('caffe.open.form')->middleware('verified');
     Route::get('/favourite', [MobileController::class, 'fav'])->middleware('auth')->name('caffee.fav');
     Route::get('/profile', [MobileController::class, 'profile'])->middleware('auth')->name('profile');
-    Route::get('/caffe/menu/{name?}', [MobileController::class, 'menu'])->name('caffee.menu');
+    Route::get('/caffee/{name?}/menu', [MobileController::class, 'menu'])->name('caffee.menu');
+
+    Route::get('/review/{cafe}', [MobileController::class, 'createReview'])->name('mobile.review.create');
+    Route::post('/review/{cafe}', [MobileController::class, 'storeReview'])->name('mobile.review.store');
 
     Route::post('/caffe/fav', [MobileController::class, 'makeFav']);
+    Route::post('/caffee', [CafeController::class, 'store']);
 });
 
 Route::prefix('admin')->as('admin.')->middleware(['auth', 'auth.admin'])->group(function () {
@@ -46,6 +52,8 @@ Route::prefix('admin')->as('admin.')->middleware(['auth', 'auth.admin'])->group(
     Route::resource('user', UserController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('cafe', CafeController::class);
+    Route::resource('activation', ActivationController::class);
+    Route::resource('deletion', DeletionController::class);
 
     Route::get('/cafe/{cafe}/suspend', [CafeController::class, 'suspend'])->name('cafe.suspend');
     Route::get('/cafe/{cafe}/verify', [CafeController::class, 'verify'])->name('cafe.verify');
@@ -63,6 +71,11 @@ Route::prefix('owner')->as('owner.')->middleware(['auth', 'auth.owner'])->group(
     Route::resource('cafe/{cafe}/category', CategoryController::class);
     Route::resource('cafe/{cafe}/menu', MenuController::class);
     Route::resource('cafe/{cafe}/image', CafeImageController::class);
+    Route::resource('cafe/{cafe}/activation', ActivationController::class);
+    Route::resource('cafe/{cafe}/deletion', DeletionController::class);
+
+    Route::get('cafe/{cafe}/activate', [CafeController::class, 'activate'])->name('cafe.activate');
+    Route::get('cafe/{cafe}/image/{image}/pin', [CafeImageController::class, 'pin'])->name('image.pin');
 
     //reply review
     Route::post('cafe/{cafe}/review/reply', [ReviewController::class, 'reply'])->name('review.reply');
@@ -72,8 +85,9 @@ Route::prefix('owner')->as('owner.')->middleware(['auth', 'auth.owner'])->group(
 });
 Route::middleware(['auth'])->group(function () {
     Route::resource('cafe', CafeController::class);
-
     Route::resource('review', ReviewController::class);
+
+    Route::get('/user/notif/readall', [UserController::class, 'readAllNotif']);
 });
 
 Auth::routes(['verify' => true]);

@@ -19,6 +19,8 @@
                                 <th>#</th>
                                 <th>User</th>
                                 <th>Role</th>
+                                <th>Jumlah Cafe</th>
+                                <th>Tgl Daftar</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -52,6 +54,12 @@
                                                 Pengunjung
                                             </div>
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $u->cafe->count() }} Kafe
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $u->created_at->translatedFormat('d F Y') }}
                                     </td>
                                     <td class="text-center">
                                         @if ($u->status == 'active')

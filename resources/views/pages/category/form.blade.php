@@ -13,15 +13,22 @@
                 </div>
                 <div class="card-body">
                     <div class="col-md-6">
-                        <form action="{{ route('admin.category.store') }}" method="POST">
+                        <form
+                            action="{{ !isset($category) ? route('admin.category.store') : route('admin.category.update', $category) }}"
+                            method="POST">
+                            @if (isset($category))
+                                {{ method_field('PUT') }}
+                            @endif
                             @csrf
                             <div class="form-group">
                                 <label for="name">Nama Kategori</label>
-                                <input type="text" class="form-control" name="name" id="name" required>
+                                <input type="text" class="form-control" name="name" id="name" required
+                                    value="{{ @$category->name }}">
                             </div>
                             <div class="form-group">
                                 <label for="icon">Icon (Font Awesome Icon)</label>
-                                <input type="text" class="form-control" name="icon" id="icon">
+                                <input type="text" class="form-control" name="icon" placeholder="fas fa-home"
+                                    id="icon" value="{{ @$category->icon }}">
                             </div>
                             <button type="submit" class="btn btn-primary float-right btn-icon">
                                 <i class="fas fa-save"></i> Simpan

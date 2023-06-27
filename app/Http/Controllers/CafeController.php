@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cafe;
 use App\Models\Favourite;
+use App\Models\Notif;
 use App\Models\Province;
 use App\Models\Review;
 use App\Models\User;
@@ -27,7 +28,7 @@ class CafeController extends Controller
             $cafe = Cafe::query()->orderBy('status', 'desc')->get();
             return view('pages.cafe.index', compact('cafe'));
         } else {
-            $cafe = Cafe::query()->where('user_id', auth()->id())->get();
+            $cafe = Cafe::query()->where('user_id', auth()->id())->orderBy('status', 'asc')->get();
             return view('pages.owner.cafes', compact('cafe'));
         }
     }
@@ -66,7 +67,7 @@ class CafeController extends Controller
 
             $cafe->save();
 
-            return redirect()->to('/open')->with('success', 'Berhasil menambahkan Cafe Baru');
+            return redirect()->to('/mobile/open')->with('success', 'Berhasil menambahkan Cafe Baru');
         } catch (Exception $e) {
             Log::error('failed storing cafe - ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi Kesalahan, pastikan data yang anda inputkan benar');
@@ -84,7 +85,7 @@ class CafeController extends Controller
         $province = Province::all();
         if ($cafe->rating == 0) {
             $review = Review::query()->where('cafe_id', $cafe->id)->get();
-            $cafe->rating = $review->avg('rating');
+            $cafe->rating = $review->avg('rating') ?? 0;
             $cafe->save();
         }
         return view('pages.owner.cafe', compact('cafe', 'province'));
@@ -175,6 +176,9 @@ class CafeController extends Controller
     public function verify(Cafe $cafe)
     {
         try {
+            $notif = new Notif();
+            $notif->user_id = $cafe->user_id;
+
             $user = User::query()->find($cafe->user_id);
             if (auth()->user()->priv == 'admin') {
                 $cafe->status = 'active';
@@ -184,10 +188,26 @@ class CafeController extends Controller
             if ($user->priv == 'user') {
                 $user->priv = 'pemilik_cafe';
                 $user->save();
+                $notif->notification = 'Selamat! Permintaan pembukaan kafe pertama anda, ' . $cafe->name . ' telah disetujui';
+            } else {
+                $notif->notification = 'Permintaan pembukaan kafe ' . $cafe->name . ' telah disetujui';
             }
+            $notif->save();
             return redirect()->back()->with('success', 'berhasil di verifikasi');
         } catch (Exception $e) {
             dd($e);
         }
+    }
+
+    public function activate(Cafe $cafe)
+    {
+        if ($cafe->status == 'suspended') return redirect()->back()->with('error', 'Kafe anda sedang di suspend');
+        elseif ($cafe->status == 'active') $cafe->status = 'deactive';
+        elseif ($cafe->status == 'deactive') $cafe->status = 'active';
+
+
+        $cafe->save();
+        return redirect()->back()
+            ->with('success', 'Berhasil ' . ($cafe->status == 'active' ?  'mengaktifkan ' : 'menonaktifkan ') . 'kafe');
     }
 }

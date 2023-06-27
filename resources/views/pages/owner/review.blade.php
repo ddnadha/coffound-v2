@@ -39,8 +39,8 @@
                                                 </p>
                                                 <div class="mb-2">
                                                     @foreach ($r->message->image as $image)
-                                                        <img src="{{ asset($image->img) }}" alt="" height="100"
-                                                            width="100">
+                                                        <img class="img-review" src="{{ asset($image->img) }}"
+                                                            alt="" height="100" width="100">
                                                     @endforeach
                                                 </div>
                                                 <br>
@@ -55,7 +55,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                {{ $r->message->created_at->diffForHumans() }}
+                                                {{ $r->created_at->translatedFormat('d F Y H:i') }}
                                             </td>
                                             <td>
                                                 <a href="" class="btn btn-icon btn-danger">
@@ -86,7 +86,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="text-review">Pastikan tautan yang kamu masukkan dapat dibuka</p>
+                    <p id="text-review">Balas Review</p>
                     <form id="form-reply" action="{{ route('owner.review.reply', $cafe) }}" method="POST">
                         @csrf
                         <input type="hidden" id="input-review-id" name="review_id">
@@ -107,6 +107,7 @@
             </div>
         </div>
     </div>
+    @include('components.modal')
 @endsection
 @push('style')
     <style>
@@ -129,6 +130,10 @@
 
         $('.btn-save').on('click', function() {
             $('#form-reply').submit()
+        })
+        $('.img-review').on('click', function() {
+            $('#img-modal-review').attr('src', $(this).attr('src'));
+            $('#reviewModal').modal('show')
         })
     </script>
 @endpush

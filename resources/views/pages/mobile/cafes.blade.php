@@ -82,7 +82,7 @@
                     dangerMode: false,
                 })
                 .then((status) => {
-                    if (status.isConfirmed)
+                    if (status)
                         window.location = _this.attr('data-url');
                 });
         })

@@ -8,7 +8,7 @@
                     <div
                         class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
                         <div class="login-brand">
-                            <img src="/logo.png" alt="logo" width="100" class="shadow-light ">
+                            <img src="/logo.png" alt="logo" width="100">
                         </div>
 
                         <div class="card card-primary">
@@ -22,9 +22,10 @@
                                     @csrf
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control" name="email"
-                                            value="{{ @old('email') }}" tabindex="1" required autofocus>
-                                        @error('name')
+                                        <input id="email" type="email"
+                                            class="form-control @error('email') is-invalid @enderror" name="email"
+                                            value="{{ @old('email') }}" tabindex="1" required autofocus />
+                                        @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
                                             </div>
@@ -40,8 +41,9 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <input id="password" type="password" class="form-control" name="password"
-                                            value="{{ @old('password') }}" tabindex="2" required>
+                                        <input id="password" type="password"
+                                            class="form-control @error('password') is-invalid @enderror" name="password"
+                                            value="{{ @old('password') }}" tabindex="2" />
                                         @error('password')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -56,7 +58,7 @@
 
                                 </form>
                                 <center>
-                                    Belum punya akun ? <a href="{{ url('/auth/register') }}">Daftar Sekarang</a>
+                                    Belum punya akun ? <a href="{{ route('register') }}">Daftar Sekarang</a>
                                 </center>
                             </div>
                         </div>

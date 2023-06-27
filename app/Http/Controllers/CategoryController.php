@@ -71,9 +71,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return view('pages.category.form', compact('category'));
     }
 
     /**
@@ -83,9 +83,17 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $category->name = $request->name;
+        $category->icon = $request->icon;
+        $category->save();
+
+        return redirect()->route('admin.category.index')->with('success', 'Berhasil mengubah data category');
     }
 
     /**

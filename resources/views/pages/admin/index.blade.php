@@ -145,8 +145,9 @@
 
         let currVisit = visitation[0]
         var ctx = document.getElementById("myChart").getContext('2d');
+
         var myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
                 datasets: [{
@@ -175,7 +176,7 @@
                         },
                         ticks: {
                             beginAtZero: true,
-                            stepSize: Math.ceil(Math.max(...currVisit) - Math.min(...currVisit) / 7),
+                            stepSize: Math.ceil((Math.max(...currVisit) - Math.min(...currVisit)) / 7),
                         }
                     }],
                     xAxes: [{

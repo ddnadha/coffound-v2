@@ -7,35 +7,7 @@
         </div>
         <div class="col-md-12">
             <div class="row mt-sm-4">
-                <div class="col-12 col-md-12 col-lg-5">
-                    <div class="card profile-widget">
-                        <div class="profile-widget-header">
-                            <img alt="image" src="{{ asset($cafe->main_image) }}" height="100" style="object-fit: cover"
-                                class="rounded-circle profile-widget-picture">
-                            <div class="profile-widget-items">
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Kunjungan</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->visit->count() }}</div>
-                                </div>
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Ulasan</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->review->count() }}</div>
-                                </div>
-                                <div class="profile-widget-item">
-                                    <div class="profile-widget-item-label">Rating</div>
-                                    <div class="profile-widget-item-value">{{ $cafe->rating }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="profile-widget-description">
-                            <div class="profile-widget-name text-dark font-weight-bold">
-                                {{ $cafe->name }}
-                            </div>
-                            {{ $cafe->desc }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-12 col-lg-7">
+                <div class="col-12 col-md-12 col-lg-12">
                     @include('components.owner-nav')
                     <div class="card">
                         <div class="card-header">

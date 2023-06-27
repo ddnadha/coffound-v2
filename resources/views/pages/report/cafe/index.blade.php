@@ -33,7 +33,8 @@
                                         {{ $r->message }}
                                         <br>
                                         @foreach ($r->image as $image)
-                                            <img src="{{ asset($image->img) }}" alt="" height="100" width="100">
+                                            <img class="img-review" src="{{ asset($image->img) }}" alt=""
+                                                height="100" width="100">
                                         @endforeach
                                     </td>
                                     <td>
@@ -81,10 +82,15 @@
             </div>
         </div>
     </section>
+    @include('components.modal')
 @endsection
 
 @push('scripts')
     <script>
         $('.table-datatable').DataTable()
+        $('.img-review').on('click', function() {
+            $('#img-modal-review').attr('src', $(this).attr('src'));
+            $('#reviewModal').modal('show')
+        })
     </script>
 @endpush

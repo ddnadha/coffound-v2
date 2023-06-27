@@ -35,6 +35,24 @@
         .main-content {
             padding-top: 0 !important;
         }
+
+        #toast-container {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            left: 30px;
+            z-index: 9999;
+            text-align: center;
+        }
+
+        .toast {
+            background-color: #000;
+            opacity: 0.8 !important;
+            color: #fff;
+            padding: 10px !important;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 </head>
@@ -50,6 +68,7 @@
                 @yield('main')
                 {{-- @include('components.mobile.nav') --}}
             </div>
+            <div id="toast-container"></div>
         </div>
     </div>
 
@@ -61,7 +80,29 @@
     <script src="{{ asset('library/jquery.nicescroll/dist/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('library/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('js/stisla.js') }}"></script>
+    <script>
+        function showToast(message) {
+            // Create a new toast element
+            var $toast = $('<div class="toast text-center">' + message + '</div>');
 
+            // Append the toast to the container
+            $('#toast-container').append($toast);
+
+            // Set a timeout to remove the toast after a certain time
+            setTimeout(function() {
+                $toast.remove();
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+
+
+        @if (session()->has('success'))
+            showToast("{{ session('success') }}");
+        @endif
+
+        @if (session()->has('error'))
+            showToast("{{ session('error') }}")
+        @endif
+    </script>
     @stack('scripts')
 
     <!-- Template JS File -->

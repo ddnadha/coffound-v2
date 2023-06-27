@@ -19,7 +19,7 @@
                                 <th>#</th>
                                 <th>Nama</th>
                                 <th>Alamat</th>
-                                <th>Domisili</th>
+                                <th>Kecamatan</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -40,6 +40,11 @@
                                             <div class="badge badge-success">
                                                 <i class="fas fa-check mr-1"></i> Active
                                             </div>
+                                        @elseif ($c->status == 'suspended')
+                                            <div class="badge badge-danger">
+                                                <i class="fas fa-ban mr-1"></i>
+                                                Suspended
+                                            </div>
                                         @else
                                             <div class="badge badge-warning">
                                                 <i class="fas fa-exclamation-triangle mr-1"></i>
@@ -50,9 +55,13 @@
                                     <td>
                                         <form action="{{ route('admin.cafe.destroy', $c) }}" method="POST">
                                             @csrf
+                                            <a href="{{ url('/mobile/caffee') }}/{{ str_replace(' ', '_', $c->name) }}"
+                                                class="btn btn-icon btn-primary btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                             @if ($c->status != 'active')
                                                 <a href="{{ route('admin.cafe.verify', $c) }}"
-                                                    class="btn btn-icon btn-primary btn-sm">
+                                                    class="btn btn-icon btn-success btn-sm">
                                                     <i class="fas fa-check"></i>
                                                 </a>
                                             @else

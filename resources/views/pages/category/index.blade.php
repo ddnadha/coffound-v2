@@ -25,7 +25,7 @@
                                 <th>Kategori</th>
                                 <th>Icon</th>
                                 <th>Penggunaan</th>
-                                <th></th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,7 +41,11 @@
                                         <form action="{{ route('admin.category.destroy', $c) }}" method="POST">
                                             @csrf
                                             {{ method_field('DELETE') }}
-                                            <button class="btn btn-sm btn-danger"
+                                            <a href="{{ route('admin.category.edit', $c) }}"
+                                                class="btn btn-warning btn-sm btn-icon">
+                                                <i class="fas fa-pencil"></i>
+                                            </a>
+                                            <button class="btn btn-icon btn-sm btn-danger"
                                                 onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')"
                                                 type="submit">
                                                 <i class="fas fa-trash"></i>

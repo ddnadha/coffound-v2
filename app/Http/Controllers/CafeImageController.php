@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cafe;
 use App\Models\CafeImage;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CafeImageController extends Controller
 {
@@ -15,7 +17,8 @@ class CafeImageController extends Controller
      */
     public function index(Cafe $cafe)
     {
-        return view('pages.owner.image', compact('cafe'));
+        $image = CafeImage::query()->where('cafe_id', $cafe->id)->orderBy('is_priority', 'desc')->get();
+        return view('pages.owner.image', compact('cafe', 'image'));
     }
 
     /**
@@ -36,19 +39,24 @@ class CafeImageController extends Controller
      */
     public function store(Cafe $cafe, Request $request)
     {
-        $images = $request->file('file');
-        foreach ($images as $image) {
-            $imageName = $image->getClientOriginalName();
-            $image->move(public_path('storage/cafe'), $imageName);
+        try {
+            $images = $request->file('file');
+            foreach ($images as $image) {
+                $imageName = $image->getClientOriginalName();
+                $image->move(public_path('storage/cafe'), $imageName);
 
-            $imageUpload = new CafeImage();
-            $imageUpload->is_priority = !CafeImage::where('cafe_id', $cafe->id)->exists();
-            $imageUpload->cafe_id = $cafe->id;
-            $imageUpload->img = 'storage/cafe/' . $imageName;
-            $imageUpload->save();
+                $imageUpload = new CafeImage();
+                $imageUpload->is_priority = !CafeImage::where('cafe_id', $cafe->id)->exists();
+                $imageUpload->cafe_id = $cafe->id;
+                $imageUpload->img = 'storage/cafe/' . $imageName;
+                $imageUpload->save();
+            }
+            session()->flash('success', 'Berhasil menambahkan foto kafe');
+            return response()->json(['success' => $imageName]);
+        } catch (Exception $e) {
+            Log::info($e->getLine());
+            return response()->json(['error' => 'Gagal menunggah foto']);
         }
-
-        return response()->json(['success' => $imageName]);
     }
 
     /**
@@ -95,5 +103,16 @@ class CafeImageController extends Controller
     {
         CafeImage::query()->find($id)->delete();
         return redirect()->back()->with('success', 'Berhasil Menghapus foto');
+    }
+
+    public function pin(Cafe $cafe, CafeImage $image)
+    {
+        CafeImage::query()->where('cafe_id', $cafe->id)->update([
+            'is_priority' => 0
+        ]);
+        $image->is_priority = 1;
+        $image->save();
+
+        return redirect()->back()->with('success', 'Berhasil pin foto');
     }
 }

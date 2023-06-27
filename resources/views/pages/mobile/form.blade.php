@@ -11,18 +11,12 @@
         <div class="section">
             <div class="section-body mb-4">
                 <div class="col-12">
-                    <form action="{{ route('owner.cafe.store') }}" method="POST" class="mt-4 w-100"
-                        enctype="multipart/form-data">
+                    <form action="{{ url('mobile/caffee') }}" method="POST" class="mt-4 w-100" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="latlng" id="inputLatLong">
                         <div class="form-group mb-2">
                             <label class="mb-1" for="name">Nama Caffee</label>
                             <input type="text" class="form-control" name="name" id="name">
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="address" class="mb-1">Alamat Caffee</label>
-                            <textarea class="form-control" name="address" id="address" rows="2"></textarea>
-                            <div class="leaflet-map mt-2" id="map" style="height: 20vh;"></div>
                         </div>
                         <div class="form-group mb-2">
                             <label for="province" class="mb-1">Provinsi</label>
@@ -41,6 +35,11 @@
                             <label for="inputAddress">Kecamatan</label>
                             <select name="district" id="select_district" class="form-control select2">
                             </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="address" class="mb-1">Alamat Caffee</label>
+                            <textarea class="form-control" name="address" id="address" rows="2"></textarea>
+                            <div class="leaflet-map mt-2" id="map" style="height: 20vh;"></div>
                         </div>
                         <div class="form-group mb-2">
                             <label for="address" class="mb-1">Deskripsi Caffee</label>

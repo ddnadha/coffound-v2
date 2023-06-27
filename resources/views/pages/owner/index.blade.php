@@ -44,7 +44,7 @@
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Review Diterima</h4>
+                            <h4>Review</h4>
                         </div>
                         <div class="card-body">
                             {{ $jumlah_review }}
@@ -146,7 +146,7 @@
         let currVisit = visitation[0]
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
                 datasets: [{
@@ -175,7 +175,7 @@
                         },
                         ticks: {
                             beginAtZero: true,
-                            stepSize: Math.ceil(Math.max(...currVisit) - Math.min(...currVisit) / 7),
+                            stepSize: Math.ceil((Math.max(...currVisit) - Math.min(...currVisit)) / 7),
                         }
                     }],
                     xAxes: [{

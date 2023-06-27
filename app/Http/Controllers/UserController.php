@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
+        $user = User::query()->where('priv', '!=', 'admin')->get();
         return view('pages.user.index', compact('user'));
     }
 
@@ -82,5 +82,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function readAllNotif()
+    {
+        auth()->user()->notif->update('status', 'opened');
+        return redirect()->back();
     }
 }

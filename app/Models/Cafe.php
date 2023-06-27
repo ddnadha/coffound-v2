@@ -61,6 +61,21 @@ class Cafe extends Model
         );
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function deletion()
+    {
+        return $this->hasOne(Deletion::class)->latest();
+    }
+
+    public function activation()
+    {
+        return $this->hasOne(Activation::class)->latest();
+    }
+
     protected function mainImage(): Attribute
     {
         $img = CafeImage::where('cafe_id', $this->id);

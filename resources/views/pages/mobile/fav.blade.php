@@ -11,7 +11,7 @@
         <div class="section">
             <div class="section-body">
                 <div class="row mx-3" id="cafe-container">
-                    @foreach ($cafes as $cafe)
+                    @forelse ($cafes as $cafe)
                         <div class="col-6 col-md-3 col-sm-6 p-1" style="max-height: 295px">
                             <div class="card h-100 card-body-cafe force-round-15">
                                 <div class="card-header card-header-image"
@@ -44,7 +44,22 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="bg-white" style="height: 80vh">
+                            <img class="img-fluid mt-5" src="{{ asset('img/empty.jpg') }}" alt="">
+                            <div class="text-center w-100">
+                                <h1 style="font-size: 24px; font-weight: 700">
+                                    Belum ada kafe yang difavoritkan !
+                                </h1>
+                                <p style="font-size: 16px">
+                                    Yuk, jelajahi coffound dan temukan kafe favoritmu!
+                                </p>
+                                <a href="{{ url('mobile/home') }}" id="btn-join" class="btn btn-primary text-white">
+                                    Jelajahi Sekarang !
+                                </a>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
