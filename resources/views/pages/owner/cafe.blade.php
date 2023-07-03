@@ -58,7 +58,7 @@
                                             yang tidak wajar di
                                             kafemu, segera ajukan aktivasi
                                             untuk mengaktifkan kafemu kembali
-                                            @if ($cafe->activation and $cafe->activation->status != 'pending')
+                                            @if (!$cafe->activation or $cafe->activation->status != 'pending')
                                                 <a style="line-height: 1.25rem; margin-top: 10px; cursor: pointer"
                                                     class="float-right" data-toggle="modal" data-target="#exampleModal">
                                                     Aktivasi <i class="fas fa-angle-right"></i>
